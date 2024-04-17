@@ -2,7 +2,7 @@ dash==2.16.1
 dash_bootstrap_components==1.6.0
 dash_mantine_components==0.14.0
 matplotlib==3.4.1
-numpy==1.21.5
+numpy==1.21.4  # This version is compatible with your Python version
 pandas==1.2.4
 plotly==5.20.0
 scipy==1.6.3
