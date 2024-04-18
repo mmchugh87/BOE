@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[165]:
+# In[1]:
 
 
 # -------------------------------------------------------------------------------
 # Import additional Python functionality / various libraries
 # -------------------------------------------------------------------------------
-    
+
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -47,7 +47,6 @@ df_treemap = loaded_data_bundle['df_treemap']
 #app = Dash(__name__)
 app = dash.Dash(external_stylesheets=[dbc.themes.PULSE])
 app.title = "UK GDP Dashboard"
-server = app.server
 
 # -------------------------------------------------------------------------------
 # Define Dashboard Component (Dashboard Position: Row 1 of 6, Col 1 of 3)
@@ -447,7 +446,7 @@ fig_treemap.update_layout(
 )
 
 # Add borders to the treemap blocks
-for trace in fig.data:
+for trace in fig_treemap.data:
     trace.marker.line.color = 'black'
     trace.marker.line.width = 0.5
 
@@ -630,5 +629,5 @@ app.layout = html.Div(children=[
 # -------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    app.run_server(port=8053, debug=False)
+    app.run_server(debug=False)
 
