@@ -47,6 +47,7 @@ df_treemap = loaded_data_bundle['df_treemap']
 #app = Dash(__name__)
 app = dash.Dash(external_stylesheets=[dbc.themes.PULSE])
 app.title = "UK GDP Dashboard"
+server = app.server
 
 # -------------------------------------------------------------------------------
 # Define Dashboard Component (Dashboard Position: Row 1 of 6, Col 1 of 3)
