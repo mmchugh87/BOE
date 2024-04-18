@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[6]:
+# In[7]:
 
 
 # -------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ import pickle
 # -------------------------------------------------------------------------------
 
 # Obtain list of sheet names ("tabs") from the source xlsx file.
-file = "Dashboard dataset.xlsx"
+file = 'Dashboard dataset.xlsx'
 sheet_names = pd.ExcelFile(file).sheet_names
 
 # Fully load the first "tab" in to a suitably named pandas dataframe ("df_GDP").
@@ -63,17 +63,17 @@ clean_index_name = "GDP_TimePeriod"
 df_GDP.index.name = clean_index_name
 
 # -------------------------------------------------------------------------------
-# Tidy the resulting, combined dataframe
+# Tidy the resulting combined dataframe
 # -------------------------------------------------------------------------------
 
 # Slice off a single, superfluous row from the resulting dataframe.
 df_GDP = df_GDP[1:]
 
-# Convert the format of the index to be truly recognised by Python as "datetime".
+# Convert the format of the index to be easily recognised by Python as "datetime" format.
 df_GDP.index = df_GDP.index.str.replace(' ', '-')
 df_GDP.index = pd.to_datetime(df_GDP.index)
 
-# Set datatype for all columns to floating (and deal with blank cells in the process)
+# Set datatype for all columns to floating
 df_GDP = df_GDP.apply(pd.to_numeric, errors='coerce').astype(float)
 
 # -------------------------------------------------------------------------------
@@ -121,21 +121,27 @@ df_GDPComponents_Abs = df_GDPComponents_Abs.div(row_sums, axis=0) * 100
 # Select the most recent row
 recent_row = df_GDP.iloc[-1]
 
-# Filter the columns you want to include in the treemap
-columns_to_include = ["Household_Durables", "Household_SemiDurables", "Household_NonDurables", "Household_Services", "Household_Other",
-                      "Gov_Spend", "GrossFixed_CapitalFormation", "Changes_Inventories_GCF", "Trade_Balance", "GDP_Other"]
+# identify the columns that are critical for building the treemap
+columns_to_include = ["Household_Durables", "Household_SemiDurables", "Household_NonDurables", 
+                      "Household_Services", "Household_Other", "Gov_Spend", 
+                      "GrossFixed_CapitalFormation", "Changes_Inventories_GCF", "Trade_Balance", 
+                      "GDP_Other"]
 
 # Create a DataFrame with one row containing the values from the most recent row
 df_treemap = pd.DataFrame(recent_row[columns_to_include]).reset_index()
 
-# Rename columns
+# Rename columns for brevity/clarity
 df_treemap.columns = ['Component', 'Value']
 
+# Treemap's cannot accept negative values - therefore we must ensure all values are positive
 df_treemap["Value"] = abs(df_treemap["Value"])
 
+# Create a new column (parent_component); this serves as the top-level hierarchy for the treemap.
+# Please look at an example treemap to grasp the concept of hierarchy.
 df_treemap["Parent_Component"] = df_treemap["Component"]
 
-# Define the mapping of values to be replaced
+# Set the appropriate values for Parent_Component column.
+# For example, the top-level hierarchy for "Household_Durables" is "Household_Spend".
 mapping = {
     "Household_Durables": "Household_Spend",
     "Household_SemiDurables": "Household_Spend",
@@ -146,28 +152,23 @@ mapping = {
     "GrossFixed_CapitalFormation": "Non_Household_Spend",
     "Changes_Inventories_GCF": "Non_Household_Spend",
     "Trade_Balance": "Non_Household_Spend",
-    "GDP_Other": "Non_Household_Spend"
-}
-
-# Replace values in the "Parent_Component" column
+    "GDP_Other": "Non_Household_Spend"}
 df_treemap["Parent_Component"] = df_treemap["Parent_Component"].replace(mapping)
 
-# Define the values to remove
+# The following values must be removed from "Parent_Component", to improve the aesthetics of the eventual treemap.
 values_to_remove = ['Gov_Spend', 'GrossFixed_CapitalFormation', 
                     'Changes_Inventories_GCF', 'Trade_Balance',
                     'GDP_Other']
-
-# Replace the values with blanks
 df_treemap['Parent_Component'] = df_treemap['Parent_Component'].replace(values_to_remove, '')
 
-# Introduce line breaks in the Component column
+# Introduce line breaks in the Component column - to  improve the aesthetics of the eventual treemap.
 df_treemap['Component'] = df_treemap['Component'].str.replace('_', '<br>')
 
 # -------------------------------------------------------------------------------
 # Save the bundle of dataframes and lists that will feed the dashboard
 # -------------------------------------------------------------------------------
 
-# Create a dictionary to bundle your DataFrames and lists
+# Create a dictionary with which to bundle together the preceding DataFrames and lists
 data_bundle = {
     'df_GDP': df_GDP,
     'df_GDP_QvPriorY': df_GDP_QvPriorY,
@@ -175,10 +176,10 @@ data_bundle = {
     'df_GDPComponents_Abs': df_GDPComponents_Abs,
     'Household_Components': Household_Components,
     'GDP_Components': GDP_Components,
-    'df_treemap': df_treemap
-}
+    'df_treemap': df_treemap}
 
-# Save the dictionary to a pickle file
+# Save the bundle-dictionary to a pickle file
 with open('data_bundle.pickle', 'wb') as f:
     pickle.dump(data_bundle, f)
+# This pickle file will subsequently be fed through to the dashboard script ("BOE_Dash.py")
 
