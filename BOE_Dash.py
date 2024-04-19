@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[16]:
+# In[22]:
 
 
 # -------------------------------------------------------------------------------
@@ -264,14 +264,12 @@ def update_gdp_time_plot(selected_option, plot_type, outlier_handling, start_yea
         trace = go.Bar(
             x=df.index,
             y=y_data,
-            name='GDP at market prices (£m)',
             marker=dict(line=dict(width=0.25, color='black')),)
     elif plot_type == 'line':
         trace = go.Scatter(
             x=df.index,
             y=y_data,
-            mode='lines',
-            name='GDP at market prices (£m)')
+            mode='lines')
     
     # Set y-axis range based on outlier handling option
     if outlier_handling == 'include':
@@ -281,7 +279,7 @@ def update_gdp_time_plot(selected_option, plot_type, outlier_handling, start_yea
     
     layout = go.Layout(
         title=title,
-        yaxis={'title': 'GDP at market prices (£m)', 'range': y_range},
+        yaxis={'title': '% Change', 'range': y_range},
         bargap=0.2
         )
     
@@ -526,8 +524,8 @@ fig_treemap = px.treemap(
 
 # Set the title and center it
 fig_treemap.update_layout(
-    title='Treemap Showing The Relatve Sizes Of GDP Components.<br>(Using The Most Recent Quarter Values)',
-    margin={'l': 45, 'r': 45, 't': 45, 'b': 45},
+    title='Treemap Showing The Relative Sizes Of GDP Components.<br>(Using The Most Recent Quarter Values)',
+    margin={'l': 45, 'r': 45, 't': 75, 'b': 45},
     title_x=0.5,
     title_y=0.95,
     )
