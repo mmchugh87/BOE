@@ -9,7 +9,7 @@ The live dashboard can be accessed online, here:
 
 **https://mmchugh87-github-io.onrender.com/**
 
-(Note: this dashboard is rendered via a free online service called "render.com". It is a free service and as such, the page can be slow to load. In some cases it may become necessary to "refresh" the page - please be patient with it).
+(Note: this dashboard is rendered via a free online service called "render.com". If the dashboard is not accessed for a while, the underlying free server may "spin down", meaning the page will be slow to load - please be patient in such cases and hit "refresh" on your browser after waiting one minute or so).
 
 ### Dashboard Workflow
 
