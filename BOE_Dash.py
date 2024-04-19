@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[62]:
+# In[11]:
 
 
 # -------------------------------------------------------------------------------
@@ -258,7 +258,7 @@ def update_gdp_time_plot(selected_option, plot_type, outlier_handling, start_yea
         df = df_GDP_QvPriorY.loc[start_year_str:end_year_str]
         title = 'GDP % Change.<br>Current Quarter vs Same Quarter Last Year'
     
-    y_data = df['GDP_MarketPrices']
+    y_data = df['GDP_Total_MarketPrices']
     
     if plot_type == 'bar':
         trace = go.Bar(
