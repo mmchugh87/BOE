@@ -5,6 +5,15 @@
 
 
 # -------------------------------------------------------------------------------
+# Import additional Python functionality / various libraries
+# -------------------------------------------------------------------------------
+
+import pandas as pd
+import numpy as np
+from scipy.stats import zscore
+import pickle
+
+# -------------------------------------------------------------------------------
 # Define function that loads and combines tabs from the source xlsx file
 # -------------------------------------------------------------------------------
 

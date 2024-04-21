@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[99]:
+# In[ ]:
 
 
 # -------------------------------------------------------------------------------
@@ -17,7 +17,62 @@ import pickle
 # Import additional functions from our own BOE_Utilities module
 # -------------------------------------------------------------------------------
 
-import BOE_Utilities
+# Import functions from BOE_Utilities module
+from BOE_Utilities import create_combined_dataframe, tidy_the_dataframe, rename_columns, create_percentage_change_df
+
+# -------------------------------------------------------------------------------
+# Use BOE_Utilities to create a fully combined and transformed dataframe
+# -------------------------------------------------------------------------------
+
+# Run a chain of BOE_Utilities functions together on the source file
+file_name = 'Dashboard dataset.xlsx'
+
+# Based on a manual review of the source files, define alternative column names for brevity / clarity
+column_mapping = {'Households: Final consumption expenditure (Sheet_GDP)': 'GDP_Component_Household_Spend', 
+                  'General Government: Final consumption expenditure (Sheet_GDP)': 'GDP_Component_Gov_Spend',
+                  'Gross fixed capital formation: Gross capital formation (Sheet_GDP)': 'GDP_Component_GFCF',
+                  'Changes in inventories: Gross capital formation (Sheet_GDP)': 'GDP_Component_Inventories',
+                  'Trade balance  (Sheet_GDP)': 'GDP_Component_TradeBalance',
+                  'Other (Sheet_GDP)': 'GDP_Component_Other',
+                  'Gross domestic product at market prices (Sheet_GDP)': 'GDP_Total_MarketPrices',
+                  'Total: UK National (Sheet_Consumption)': 'Household_Total_Spend',
+                  'Durable goods: UK Domestic (Sheet_Consumption)': 'Household_Component_Durables',
+                  'Semi-durable goods: UK Domestic (Sheet_Consumption)': 'Household_Component_SemiDurables',
+                  'Non-durable goods: UK Domestic (Sheet_Consumption)': 'Household_Component_NonDurables',
+                  'Services: UK Domestic (Sheet_Consumption)': 'Household_Component_Services',
+                  'Other (Sheet_Consumption)': 'Household_Component_Other'}
+
+# Define and then execute a chain of functions from our BOE_Utilities module.
+# This chain of functions receives the xlsx file and the column_mapping, and then combines and transforms the xlsx data...
+#...into a dataframe that will subsequently be used to generate other useful dataframes and plots.
+def create_df_gdp(file_name, column_mapping):
+    df = create_combined_dataframe(file_name)
+    df = tidy_the_dataframe(df)
+    df = rename_columns(df, column_mapping)
+    return df
+    
+# Run the chain of functions and assign the resulting dataframe
+df_GDP = create_df_gdp(file_name=file_name, column_mapping=column_mapping)
+
+
+# In[ ]:
+
+
+# -------------------------------------------------------------------------------
+# Import additional Python functionality / various libraries
+# -------------------------------------------------------------------------------
+
+import pandas as pd
+import numpy as np
+from scipy.stats import zscore
+import pickle
+
+# -------------------------------------------------------------------------------
+# Import additional functions from our own BOE_Utilities module
+# -------------------------------------------------------------------------------
+
+# Import functions from BOE_Utilities module
+from BOE_Utilities import create_combined_dataframe, tidy_the_dataframe, rename_columns, create_percentage_change_df
 
 # -------------------------------------------------------------------------------
 # Use BOE_Utilities to create a fully combined and transformed dataframe
