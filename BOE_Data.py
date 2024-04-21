@@ -73,7 +73,7 @@ Household_Components = list(df_GDP.columns)[-5:]
 df_GDP_QvPriorQ = create_percentage_change_df(df_GDP, 1)
 
 # Run function to create duplicate dataframe containing percentage changes versus the quarter in the previous year.
-df_GDP_QvPriorY = create_percentage_change_df(df_GDP, 3)
+df_GDP_QvPriorY = create_percentage_change_df(df_GDP, 4)
 
 # -------------------------------------------------------------------------------
 # Create a duplicate df containing absolute values of GDP components (used in subsequent plots)
