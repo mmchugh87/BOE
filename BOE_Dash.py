@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[22]:
+# In[ ]:
 
 
 # -------------------------------------------------------------------------------
@@ -508,8 +508,8 @@ Plot_Household_Time = dcc.Graph(id='Plot_Household_Time')
 
 # The colors are manually defined here to match the colors of the adjacent line plot (in Col 2 of 3).
 # It would be better to come up with a programmatic way of assigning colors in a stable, consistent way.
-color_scheme = ["red", "steelblue", "green", "purple", "hotpink", 
-                "steelblue", "blue", "steelblue", "steelblue", "orange",
+color_scheme = ["green", "blue", "purple", "orange", "red", 
+                "steelblue", "steelblue", "steelblue", "steelblue", "steelblue",
                 "black"]
 
 # Create the treemap
