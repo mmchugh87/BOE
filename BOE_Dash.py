@@ -46,7 +46,10 @@ df_treemap = loaded_data_bundle['df_treemap']
 
 # Standard code to initialise dash dashboard (using a "dbc" style theme)
 app = dash.Dash(external_stylesheets=[dbc.themes.PULSE])
-app.title = "UK GDP Dashboard"
+
+# this title appears in user's web browser tab, when dashboard is running
+app.title = "UK GDP Dashboard" 
+
 # This line is required for the dashboard to successfully render online via render.com
 server = app.server
 
@@ -54,7 +57,7 @@ server = app.server
 # Define Dashboard Components (Dashboard Position: Row 1 of 5, Col 1 of 3)
 # -------------------------------------------------------------------------------
 
-# Defint the text for a Markdown component in the dashboard
+# Define the text for a Markdown component in the dashboard
 markdown_text = """
 ### UK GDP Dashboard
 ###### Note: Not optimised for small screens.
@@ -83,7 +86,8 @@ radio_display = dcc.RadioItems(
     )
 
 def update_heatmap(selected_option):
-    # Slice the DataFrame based on the selected radio button value
+    
+    # This code determines which dataframe to use based on the user-selected radio button value ('radio-display')
     if selected_option == 'prior_q':
         sliced_df = df_GDP_QvPriorQ.iloc[-10:, :7]
         title = "% Change For Various GDP Components.<br>Current Quarter vs Prior Quarter"
@@ -91,7 +95,7 @@ def update_heatmap(selected_option):
         sliced_df = df_GDP_QvPriorY.iloc[-10:, :7]
         title = "% Change For Various GDP Components.<br>Current Quarter vs Same Quarter Last Year"
     
-    # Transpose and format the DataFrame
+    # Transpose and format the DataFrame so that it is suitable for displaying as a tabular heatmap.
     sliced_df_transposed = sliced_df.transpose()
     sliced_df_transposed.columns = pd.to_datetime(sliced_df_transposed.columns)
     sliced_df_transposed.columns = sliced_df_transposed.columns.to_period('Q').strftime('%Y Q%q')
@@ -118,6 +122,7 @@ def update_heatmap(selected_option):
     
     return fig_heatmap
 
+# Create the Dash plot object
 Plot_GDP_Heatmap = dcc.Graph(id='Plot_GDP_Heatmap')
 
 # -------------------------------------------------------------------------------
@@ -125,9 +130,9 @@ Plot_GDP_Heatmap = dcc.Graph(id='Plot_GDP_Heatmap')
 # -------------------------------------------------------------------------------
 
 # Define the number of bins for the histogram
-num_bins = 100  # Adjust as needed
+num_bins = 100
 
-# Create the numpy array
+# Create the numpy array (manually set the lower and upper limit, recalling that Z-score was capped earlier at +/-4)
 bars_array = np.arange(-4.1, 4.2, 0.1)
 
 # Define the callback to update the histogram based on the radio_display selection
@@ -137,10 +142,11 @@ bars_array = np.arange(-4.1, 4.2, 0.1)
     )
 
 def update_histogram(selected_radio):
+    
+    # This code determines which dataframe to use based on the user-selected radio button value ('radio-display')
     if selected_radio == 'prior_q':
         df = df_GDP_QvPriorQ
         title = "Histogram of GDP growth rates as Zscores.<br>The most recent growth rate is highlighted yellow.<br>Current Quarter versus Prior Quarter."
-
     elif selected_radio == 'prior_y':
         df = df_GDP_QvPriorY
         title = "Histogram of GDP growth rates as Zscores.<br>The most recent growth rate is highlighted yellow.<br>Current Quarter versus Same Quarter Last Year."
@@ -155,12 +161,11 @@ def update_histogram(selected_radio):
         marker=dict(line=dict(width=0.25, color='black'))
         )
 
-    # Find the index position in the array
+    # Find the index position in the array corresponding to the most recent Z-score
+    # The purpose of this code is to enable that particular bar in the histogram to be highlighted (yellow)
     bar_to_highlight = df['Zscore'].iloc[-1]
     bar_position = np.abs(bars_array - bar_to_highlight).argmin() - 1
     colors = ['yellow' if i == bar_position else 'steelblue' for i in range(num_bins)]
-
-    # Update marker color based on highlighted bar
     hist_trace.marker.color = colors
 
     # Define the layout for the histogram
@@ -179,7 +184,7 @@ def update_histogram(selected_radio):
 
     return hist_figure
 
-# Create the plot object
+# Create the Dash plot object
 Plot_GDP_histogram = dcc.Graph(id='Plot_GDP_histogram')
 
 # -------------------------------------------------------------------------------
@@ -250,7 +255,7 @@ def update_gdp_time_plot(selected_option, plot_type, outlier_handling, start_yea
     start_year_str = str(start_year)
     end_year_str = str(end_year)
     
-    # Choose the appropriate DataFrame based on the selected option
+    # This code determines which dataframe to use based on the user-selected radio button value ('radio-display')
     if selected_option == 'prior_q':
         df = df_GDP_QvPriorQ.loc[start_year_str:end_year_str]
         title = 'GDP % Change.<br>Current Quarter vs Prior Quarter'
@@ -285,7 +290,7 @@ def update_gdp_time_plot(selected_option, plot_type, outlier_handling, start_yea
     
     return {'data': [trace], 'layout': layout}
 
-# Create the plot object
+# Create the Dash plot object
 Plot_GDP_Time = dcc.Graph(id='Plot_GDP_Time')
 
 # -------------------------------------------------------------------------------
@@ -370,7 +375,7 @@ def update_stacked_bar_chart(start_year, end_year, color_scheme):
 
     return bar_figure
 
-# Create the plot object
+# Create the Dash plot object
 Plot_GDP_Stacks = dcc.Graph(id='Plot_GDP_Stacks')
 
 # -------------------------------------------------------------------------------
@@ -425,7 +430,7 @@ def update_bar_chart(selected_column, start_year, end_year):
     
     return {'data': [trace], 'layout': layout}
 
-# Create the plot object
+# Create the Dash plot object
 Plot_GDP_Components = dcc.Graph(id='Plot_GDP_Components')
 
 # -------------------------------------------------------------------------------
@@ -499,7 +504,7 @@ def update_line_plot(selected_components):
     
     return {'data': traces, 'layout': layout}
 
-# Create the plot object for the line plot
+# Create the Dash plot object
 Plot_Household_Time = dcc.Graph(id='Plot_Household_Time')
 
 # -------------------------------------------------------------------------------
@@ -535,11 +540,11 @@ for trace in fig_treemap.data:
     trace.marker.line.color = 'black'
     trace.marker.line.width = 0.5
 
-# Create the plot object
+# Create the Dash plot object
 Plot_Treemap = dcc.Graph(id='Plot_Treemap', figure=fig_treemap)
 
 # -------------------------------------------------------------------------------
-# Organise the Dashboard
+# Arrange the dashboard
 # -------------------------------------------------------------------------------
 
 # Define the app layout

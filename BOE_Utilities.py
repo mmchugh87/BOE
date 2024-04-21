@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 # -------------------------------------------------------------------------------
@@ -14,23 +14,23 @@ from scipy.stats import zscore
 import pickle
 
 # -------------------------------------------------------------------------------
-# Define function that loads and combines tabs from the source xlsx file
+# Define function that loads and combines worksheets from the source xlsx file
 # -------------------------------------------------------------------------------
 
 def create_combined_dataframe(file_name):
     try:
-        # Obtain list of sheet names ("tabs") from the source Excel file.
+        # Obtain list of sheet names from the source Excel file.
         print("Sheet names in the Excel file:")
         excel_file = pd.ExcelFile(file_name)
         sheet_names = excel_file.sheet_names
         print(sheet_names)
         
-        dfs = []  # List to store dataframes from each sheet
+        dfs = []  # List to store dataframes from each worksheet
         
         # Iterate through each sheet in the Excel file
         for sheet_name in sheet_names:
             print(f"Processing sheet: {sheet_name}")
-            # Read the sheet into a pandas dataframe
+            # Read the worksheet into a pandas dataframe
             # header = 4 (based on  manual inspection of file)
             df = pd.read_excel(file_name, sheet_name=sheet_name, header=4)
             
@@ -47,6 +47,7 @@ def create_combined_dataframe(file_name):
         
             # add the newly loaded dataframe to the list of dataframes ("dfs")
             dfs.append(df)
+            
             print("Dataframe loaded successfully.")
                 
         # Concatenate all dataframes into a single dataframe
@@ -55,6 +56,7 @@ def create_combined_dataframe(file_name):
         return dfs_combined
         
     except Exception as e:
+        
         print(f"Error loading Excel data: {str(e)}")
         return None
 
@@ -68,8 +70,9 @@ def tidy_the_dataframe(df):
         # Convert the format of the index to be easily recognized by Python as "datetime" format
         df.index = df.index.str.replace(' ', '-')  # Replace spaces with dashes
         df.index = pd.to_datetime(df.index)        # Convert index to datetime format
-
+        
         print("Index converted to datetime format successfully.")
+    
     except Exception as e:
         print(f"Error occurred while converting index to datetime format: {e}")
 
@@ -78,25 +81,31 @@ def tidy_the_dataframe(df):
         df = df.apply(pd.to_numeric, errors='coerce').astype(float)
 
         print("Columns converted to floating point numbers successfully.")
+        
     except Exception as e:
+        
         print(f"Error occurred while converting columns to floating point numbers: {e}")
 
     return df
 
 # -------------------------------------------------------------------------------
-# Define function that amends the column names of the combined dataframe
+# Define function that amends the column names of the combined tidy dataframe
 # -------------------------------------------------------------------------------
 
 def rename_columns(df, column_mapping):
 
     try:
-        # Apply column renaming using the provided mapping
+        # Apply column renaming using a mapping provided by the user
         df = df.rename(columns=column_mapping)
+        
         print("Columns renamed successfully.")
+        
         return df
     
     except Exception as e:
+        
         print("An error occurred while renaming columns:", e)
+        
         return None
     
 # -------------------------------------------------------------------------------
@@ -104,6 +113,7 @@ def rename_columns(df, column_mapping):
 # -------------------------------------------------------------------------------
 
 def create_percentage_change_df(df, shift_value):
+    
     try:
         # Copy the input DataFrame
         df_copy = df.copy()
@@ -119,7 +129,10 @@ def create_percentage_change_df(df, shift_value):
         
         # Return the resulting DataFrame
         return df_copy
+    
     except Exception as e:
+        
         print(f"An error occurred whilst creating percentage change df: {e}")
+        
         return None
 
