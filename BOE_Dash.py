@@ -89,10 +89,10 @@ def update_heatmap(selected_option):
     
     # This code determines which dataframe to use based on the user-selected radio button value ('radio-display')
     if selected_option == 'prior_q':
-        sliced_df = df_GDP_QvPriorQ.iloc[-10:, :7]
+        sliced_df = df_GDP_QvPriorQ.iloc[-5:, :7]
         title = "% Change For Various GDP Components.<br>Current Quarter vs Prior Quarter"
     else:
-        sliced_df = df_GDP_QvPriorY.iloc[-10:, :7]
+        sliced_df = df_GDP_QvPriorY.iloc[-5:, :7]
         title = "% Change For Various GDP Components.<br>Current Quarter vs Same Quarter Last Year"
     
     # Transpose and format the DataFrame so that it is suitable for displaying as a tabular heatmap.
